@@ -275,7 +275,12 @@ impl DeviceTrait for Device {
     fn name(&self) -> Result<String, DeviceNameError> {
         match &self.0 {
             None => Ok("default".to_owned()),
-            Some(info) => Ok(info.product_name.clone()),
+            Some(info) => Ok(format!(
+                "{} - {} - {}",
+                info.product_name,
+                oboe_audio_device_type_to_string(info.device_type),
+                info.id
+            )),
         }
     }
 
@@ -495,5 +500,42 @@ impl StreamTrait for Stream {
                 .request_pause()
                 .map_err(PauseStreamError::from),
         }
+    }
+}
+
+fn oboe_audio_device_type_to_string(audio_device_type: oboe::AudioDeviceType) -> &'static str {
+    match audio_device_type {
+        oboe::AudioDeviceType::Unknown => "Unknown",
+        oboe::AudioDeviceType::AuxLine => "AuxLine",
+        oboe::AudioDeviceType::BleBroadcast => "BleBroadcast",
+        oboe::AudioDeviceType::BleHeadset => "BleHeadset",
+        oboe::AudioDeviceType::BleSpeaker => "BleSpeaker",
+        oboe::AudioDeviceType::BluetoothA2DP => "BluetoothA2DP",
+        oboe::AudioDeviceType::BluetoothSCO => "BluetoothSCO",
+        oboe::AudioDeviceType::BuiltinEarpiece => "BuiltinEarpiece",
+        oboe::AudioDeviceType::BuiltinMic => "BuiltinMic",
+        oboe::AudioDeviceType::BuiltinSpeaker => "BuiltinSpeaker",
+        oboe::AudioDeviceType::BuiltinSpeakerSafe => "BuiltinSpeakerSafe",
+        oboe::AudioDeviceType::Bus => "Bus",
+        oboe::AudioDeviceType::Dock => "Dock",
+        oboe::AudioDeviceType::Fm => "Fm",
+        oboe::AudioDeviceType::FmTuner => "FmTuner",
+        oboe::AudioDeviceType::Hdmi => "Hdmi",
+        oboe::AudioDeviceType::HdmiArc => "HdmiArc",
+        oboe::AudioDeviceType::HdmiEarc => "HdmiEarc",
+        oboe::AudioDeviceType::HearingAid => "HearingAid",
+        oboe::AudioDeviceType::Ip => "Ip",
+        oboe::AudioDeviceType::LineAnalog => "LineAnalog",
+        oboe::AudioDeviceType::LineDigital => "LineDigital",
+        oboe::AudioDeviceType::RemoteSubmix => "RemoteSubmix",
+        oboe::AudioDeviceType::Telephony => "Telephony",
+        oboe::AudioDeviceType::TvTuner => "TvTuner",
+        oboe::AudioDeviceType::UsbAccessory => "UsbAccessory",
+        oboe::AudioDeviceType::UsbDevice => "UsbDevice",
+        oboe::AudioDeviceType::UsbHeadset => "UsbHeadset",
+        oboe::AudioDeviceType::WiredHeadphones => "WiredHeadphones",
+        oboe::AudioDeviceType::WiredHeadset => "WiredHeadset",
+        oboe::AudioDeviceType::Unsupported => "Unsupported",
+        _ => "NotSpecified"
     }
 }
